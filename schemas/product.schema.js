@@ -1,5 +1,5 @@
 // https://joi.dev/api/?v=17.6.0
-const Joi = require("joi"); // Validar la data que se envia desde el cliente
+const Joi = require('joi'); // Validar la data que se envia desde el cliente
 
 const id = Joi.string().uuid();
 const name = Joi.string().min(3).max(15);
