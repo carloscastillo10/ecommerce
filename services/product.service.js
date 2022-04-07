@@ -1,5 +1,6 @@
-const faker = require("faker"); // Crear data fake
-const boom = require("@hapi/boom"); // Middleware para manejar los status code
+const faker = require('faker'); // Crear data fake
+const boom = require('@hapi/boom'); // Middleware para manejar los status code
+const sequelize = require('./../libs/sequelize');
 
 class ProductsService {
     constructor() {
@@ -31,20 +32,18 @@ class ProductsService {
     }
 
     async find() {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(this.products);
-            }, 5000);
-        });
+        const query = 'SELECT * FROM TASKS';
+        const [data] = await sequelize.query(query);
+        return data;
     }
 
     async findOne(id) {
         const product = this.products.find((item) => item.id === id);
         if (!product) {
-            throw boom.notFound("Product not found");
+            throw boom.notFound('Product not found');
         }
         if (product.isBlock) {
-            throw boom.conflict("Product is block");
+            throw boom.conflict('Product is block');
         }
         return product;
     }
@@ -52,7 +51,7 @@ class ProductsService {
     async update(id, changes) {
         const index = this.products.findIndex((item) => item.id === id);
         if (index === -1) {
-            throw boom.notFound("Product not found");
+            throw boom.notFound('Product not found');
         }
 
         const product = this.products[index];
@@ -66,7 +65,7 @@ class ProductsService {
     async delete(id) {
         const index = this.products.findIndex((item) => item.id === id);
         if (index === -1) {
-            throw boom.notFound("Product not found");
+            throw boom.notFound('Product not found');
         }
         this.products.splice(index, 1);
         return { id };
