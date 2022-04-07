@@ -1,27 +1,28 @@
-const express = require("express");
-const productsService = require("./../services/product.service");
-const validatorHandler = require("./../middlewares/validator.handler");
+const express = require('express');
+
+const ProductsService = require('./../services/product.service');
+const validatorHandler = require('./../middlewares/validator.handler');
 const {
-    createProductShema,
-    updateProductShema,
-    getProductShema,
-} = require("./../schemas/product.schema");
+    createProductSchema,
+    updateProductSchema,
+    getProductSchema,
+} = require('./../schemas/product.schema');
+
 const router = express.Router();
-const service = new productsService();
+const service = new ProductsService();
 
-router.get("/", async (req, res) => {
-    const products = await service.find();
-    res.json(products);
-});
-
-// Endpoints de forma especifica antes de los endopoints dinamicos
-router.get("/filter", (req, res) => {
-    res.send("Yo soy un filter");
+router.get('/', async (req, res, next) => {
+    try {
+        const products = await service.find();
+        res.json(products);
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.get(
-    "/:id",
-    validatorHandler(getProductShema, "params"),
+    '/:id',
+    validatorHandler(getProductSchema, 'params'),
     async (req, res, next) => {
         try {
             const { id } = req.params;
@@ -34,21 +35,23 @@ router.get(
 );
 
 router.post(
-    "/",
-    validatorHandler(createProductShema, "body"),
-    async (req, res) => {
-        const body = req.body;
-        console.log(body);
-        const newProduct = await service.create(body);
-        res.status(201).json(newProduct);
+    '/',
+    validatorHandler(createProductSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const body = req.body;
+            const newProduct = await service.create(body);
+            res.status(201).json(newProduct);
+        } catch (error) {
+            next(error);
+        }
     }
 );
 
-// Update partial object
 router.patch(
-    "/:id",
-    validatorHandler(getProductShema, "params"),
-    validatorHandler(updateProductShema, "body"),
+    '/:id',
+    validatorHandler(getProductSchema, 'params'),
+    validatorHandler(updateProductSchema, 'body'),
     async (req, res, next) => {
         try {
             const { id } = req.params;
@@ -61,10 +64,18 @@ router.patch(
     }
 );
 
-router.delete("/:id", async (req, res) => {
-    const { id } = req.params;
-    const response = await service.delete(id);
-    res.json(response);
-});
+router.delete(
+    '/:id',
+    validatorHandler(getProductSchema, 'params'),
+    async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            await service.delete(id);
+            res.status(201).json({ id });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 module.exports = router;
