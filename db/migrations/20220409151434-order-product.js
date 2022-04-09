@@ -1,9 +1,9 @@
 'use strict';
 
 const { DataTypes, Sequelize } = require('sequelize');
-const { ORDER_TABLE } = require('./order.model');
-const { PRODUCT_TABLE } = require('./product.model');
 const { ORDER_PRODUCT_TABLE } = require('./../models/order-product.model');
+const { ORDER_TABLE } = require('./../models/order.model');
+const { PRODUCT_TABLE } = require('./../models/product.model');
 
 module.exports = {
     async up(queryInterface) {
