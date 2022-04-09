@@ -2,6 +2,7 @@
 
 const { DataTypes, Sequelize } = require('sequelize');
 const { ORDER_TABLE } = require('./../models/order.model');
+const { CUSTOMER_TABLE } = require('./customer.model');
 
 module.exports = {
     async up(queryInterface) {
@@ -12,14 +13,16 @@ module.exports = {
                 primaryKey: true,
                 type: DataTypes.INTEGER,
             },
-            name: {
-                type: DataTypes.STRING,
-                unique: true,
+            customerId: {
+                field: 'customer_id',
                 allowNull: false,
-            },
-            image: {
-                type: DataTypes.STRING,
-                allowNull: false,
+                type: DataTypes.INTEGER,
+                references: {
+                    model: CUSTOMER_TABLE,
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'SET NULL',
             },
             createdAt: {
                 allowNull: false,
