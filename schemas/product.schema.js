@@ -38,7 +38,7 @@ const queryProductSchema = Joi.object({
     offset,
     price,
     priceMin,
-    priceMax: priceMax.when('price_min', { // Validar que el precio maximo sea obligatorio si es que se envia un valor minimo y ademas sea entero
+    priceMax: priceMax.when('priceMin', { // Validar que el precio maximo sea obligatorio si es que se envia un valor minimo y ademas sea entero
         is: Joi.number().integer(),
         then: Joi.required(),
     }),
