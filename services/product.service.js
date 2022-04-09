@@ -1,6 +1,7 @@
-const faker = require('faker'); // Crear data fake
-const boom = require('@hapi/boom'); // Middleware para manejar los status code
-const sequelize = require('./../libs/sequelize');
+const faker = require('faker');
+const boom = require('@hapi/boom');
+
+const { models } = require('../libs/sequelize');
 
 class ProductsService {
     constructor() {
@@ -22,28 +23,24 @@ class ProductsService {
     }
 
     async create(data) {
-        const newProduct = {
-            id: faker.datatype.uuid(),
-            ...data,
-        };
-
-        this.products.push(newProduct);
+        const newProduct = await models.Product.create(data);
         return newProduct;
     }
 
     async find() {
-        const query = 'SELECT * FROM TASKS';
-        const [data] = await sequelize.query(query);
-        return data;
+        const products = await models.Product.findAll({
+            include: ['category'],
+        });
+        return products;
     }
 
     async findOne(id) {
         const product = this.products.find((item) => item.id === id);
         if (!product) {
-            throw boom.notFound('Product not found');
+            throw boom.notFound('product not found');
         }
         if (product.isBlock) {
-            throw boom.conflict('Product is block');
+            throw boom.conflict('product is block');
         }
         return product;
     }
@@ -51,13 +48,12 @@ class ProductsService {
     async update(id, changes) {
         const index = this.products.findIndex((item) => item.id === id);
         if (index === -1) {
-            throw boom.notFound('Product not found');
+            throw boom.notFound('product not found');
         }
-
         const product = this.products[index];
         this.products[index] = {
-            ...product, // Persistir todo lo que hay del producto,
-            ...changes, // Aplicar los nuevos cambios
+            ...product,
+            ...changes,
         };
         return this.products[index];
     }
@@ -65,7 +61,7 @@ class ProductsService {
     async delete(id) {
         const index = this.products.findIndex((item) => item.id === id);
         if (index === -1) {
-            throw boom.notFound('Product not found');
+            throw boom.notFound('product not found');
         }
         this.products.splice(index, 1);
         return { id };
