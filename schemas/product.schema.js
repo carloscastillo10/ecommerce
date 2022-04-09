@@ -1,25 +1,52 @@
-// https://joi.dev/api/?v=17.6.0
-const Joi = require("joi"); // Validar la data que se envia desde el cliente
+const Joi = require('joi');
 
-const id = Joi.string().uuid();
+const id = Joi.number().integer();
 const name = Joi.string().min(3).max(15);
 const price = Joi.number().integer().min(10);
+const description = Joi.string().min(10);
 const image = Joi.string().uri();
+const categoryId = Joi.number().integer();
 
-const createProductShema = Joi.object({
+const priceMin = Joi.number().integer();
+const priceMax = Joi.number().integer();
+
+const limit = Joi.number().integer();
+const offset = Joi.number().integer();
+
+const createProductSchema = Joi.object({
     name: name.required(),
     price: price.required(),
+    description: description.required(),
     image: image.required(),
+    categoryId: categoryId.required(),
 });
 
-const updateProductShema = Joi.object({
+const updateProductSchema = Joi.object({
     name: name,
     price: price,
     image: image,
+    description: description,
+    categoryId,
 });
 
-const getProductShema = Joi.object({
+const getProductSchema = Joi.object({
     id: id.required(),
 });
 
-module.exports = { createProductShema, updateProductShema, getProductShema };
+const queryProductSchema = Joi.object({
+    limit,
+    offset,
+    price,
+    priceMin,
+    priceMax: priceMax.when('priceMin', { // Validar que el precio maximo sea obligatorio si es que se envia un valor minimo y ademas sea entero
+        is: Joi.number().integer(),
+        then: Joi.required(),
+    }),
+});
+
+module.exports = {
+    createProductSchema,
+    updateProductSchema,
+    getProductSchema,
+    queryProductSchema,
+};

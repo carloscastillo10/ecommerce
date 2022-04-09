@@ -1,0 +1,53 @@
+# docker-compse up -d postgres (Levantantar el servicio de postgres)
+# -d -> Para que se ejecute en segundo plano
+# docker-compose ps (Para ver que servicios se estan ejecutando)
+# docker-compose down (Para dar de baja a los servicios)
+
+#volumes -> para persistir la data porque docker no tiene estado
+# docker-compose exec postgres bash (Conectarse al contenedor de postgres via terminal)
+    # psql -h localhost -d ecommerce -U ecommerce_admin (Conectarse a la base de datos)
+# exit (Salir del contenedor)
+# docker ps (devuelve el id de cada servicio)
+# docker inspect id (id del servicio)
+
+version: '3.3'
+
+services:
+    postgres:
+        image: postgres:13
+        environment:
+            - POSTGRES_DB=ecommerce
+            - POSTGRES_USER=ecommerce_admin
+            - POSTGRES_PASSWORD=admin123
+        ports:
+            - 5432:5432
+        volumes:
+            - ./postgres_data:/var/lib/postgresql/data
+
+    pgadmin:
+        image: dpage/pgadmin4
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+            - PGADMIN_DEFAULT_PASSWORD=root
+        ports:
+            - 5050:80
+    mysql:
+        image: mysql:5
+        environment:
+            - MYSQL_DATABASE=ecommerce
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=admin123
+            - MYSQL_PORT=3306
+        ports:
+            - 3306:3306
+
+        volumes:
+            - ./mysql_data:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            - MYSQL_ROOT_PASSWORD=admin123
+            - PMA_HOST=mysql # Deber ser el nombre del servicio
+        ports:
+            - 8080:80
