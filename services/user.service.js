@@ -1,12 +1,17 @@
 const boom = require('@hapi/boom');
-const { use } = require('../routes/users.router');
+const bcrypt = require('bcrypt');
 const { models } = require('./../libs/sequelize');
 
 class UserService {
     constructor() {}
 
     async create(data) {
-        const newUsuer = await models.User.create(data);
+        const hash = await bcrypt.hash(data.password, 10);
+        const newUsuer = await models.User.create({
+            ...data, // Clonar el objeto
+            password: hash, // Reemplazar la propiedad 'password' por el hash
+        });
+        delete newUsuer.dataValues.password;
         return newUsuer;
     }
 

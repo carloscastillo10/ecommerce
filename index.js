@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors'); // Para gestionar a quien se le da acceso a la aplicacion
 const routerApi = require('./routes');
+const { checkIpiKey } = require('./middlewares/auth.handler');
 const {
     logErrors,
     errorHandler,
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
     res.send('Hello my server in express');
 });
 
-app.get('/new-route', (req, res) => {
+app.get('/new-route', checkIpiKey, (req, res) => {
     res.send("Hello, i'm new route");
 });
 
