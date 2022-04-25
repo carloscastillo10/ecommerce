@@ -26,6 +26,8 @@ const options = {
 };
 app.use(cors(options)); // Resolver problemas
 
+require('./utils/auth');
+
 app.get('/', (req, res) => {
     res.send('Hello my server in express');
 });
