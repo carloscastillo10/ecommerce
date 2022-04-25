@@ -27,7 +27,15 @@ class UserService {
         if (!user) {
             throw boom.notFound('User not found');
         }
+        delete user.dataValues.password;
         return user;
+    }
+
+    async findByEmail(email) {
+        const response = await models.User.findOne({
+            where: { email },
+        });
+        return response;
     }
 
     async update(id, changes) {
