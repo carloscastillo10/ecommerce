@@ -16,7 +16,7 @@ class OrderService {
     async findByUser(userId) {
         const orders = await models.Order.findAll({
             where: {
-                '$customer.user.id$': userId,
+                '$customer.user.id$': userId, // Relationships management with sequelize
             },
             include: [
                 {
