@@ -3,7 +3,6 @@ const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 
 const UserService = require('./../../../services/user.service');
-const { use } = require('passport');
 const service = new UserService();
 
 const LocalStrategy = new Strategy(
