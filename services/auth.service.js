@@ -60,6 +60,24 @@ class AuthService {
         return response;
     }
 
+    async changePassword(token, newPassword) {
+        try {
+            const payload = await jwt.verify(token, config.jwtRecoverySecret);
+            const user = await service.findOne(payload.sub);
+            if (user.recoveryToken !== token) {
+                throw boom.unauthorized();
+            }
+            const hash = await bcrypt.hash(newPassword, 10);
+            await service.update(user.id, {
+                recoveryToken: null,
+                password: hash,
+            });
+            return { message: 'password changed' };
+        } catch (error) {
+            throw boom.unauthorized();
+        }
+    }
+
     async sendMail(emailInformation) {
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',

@@ -7,12 +7,13 @@ class UserService {
 
     async create(data) {
         const hash = await bcrypt.hash(data.password, 10);
-        const newUsuer = await models.User.create({
+        const newUser = await models.User.create({
             ...data, // Clonar el objeto
             password: hash, // Reemplazar la propiedad 'password' por el hash
         });
-        delete newUsuer.dataValues.password;
-        return newUsuer;
+        delete newUser.dataValues.password;
+        delete newUser.dataValues.recoveryToken;
+        return newUser;
     }
 
     async find() {
@@ -32,11 +33,12 @@ class UserService {
     }
 
     async findByEmail(email) {
-        const response = await models.User.findOne({
+        const user = await models.User.findOne({
             where: { email },
             include: ['customer']
         });
-        return response;
+        delete user.dataValues.recoveryToken;
+        return user;
     }
 
     async update(id, changes) {
