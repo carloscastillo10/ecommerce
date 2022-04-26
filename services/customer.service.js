@@ -37,6 +37,7 @@ class CustomerService {
         });
 
         delete newCustomer.user.dataValues.password;
+        delete newCustomer.user.dataValues.recoveryToken;
         return newCustomer;
     }
 
