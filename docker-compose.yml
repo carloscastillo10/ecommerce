@@ -10,6 +10,10 @@
 # docker ps (devuelve el id de cada servicio)
 # docker inspect id (id del servicio)
 
+#heroku run npm run migrations:delete (Eliminar la estructura de la base de datos en produccion)
+#heroku config:set API_KEY=... JWT_SECRET=...
+#heroku run npm run migrations:run (Ejecutar las migraciones en producccion)
+
 version: '3.3'
 
 services:
